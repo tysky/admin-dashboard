@@ -3,7 +3,7 @@ import { GoogleLogout } from 'react-google-login';
 import {
   BrowserRouter as Router, Route, Link, Redirect, withRouter
 } from 'react-router-dom';
-import Users from './Users';
+import UsersList from './Users';
 import LoginPage from './LoginPage';
 
 import './app.css';
@@ -55,7 +55,7 @@ export default class App extends Component {
               path="/auth"
               render={props => <LoginPage responseGoogle={this.responseGoogle} {...props} />}
             />
-            <Route path="/users" component={Users} />
+            <Route path="/users" component={UsersList} />
           </div>
         </Router>
       </div>

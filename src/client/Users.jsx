@@ -1,5 +1,64 @@
 import React from 'react';
+import { Icon, Menu, Table } from 'semantic-ui-react';
+import axios from 'axios';
 
-const Users = () => <h1>Users info</h1>;
+const TableExamplePagination = ({ usersList }) => (
+  <Table celled>
+    <Table.Header>
+      <Table.Row>
+        <Table.HeaderCell>Id</Table.HeaderCell>
+        <Table.HeaderCell>FullName</Table.HeaderCell>
+        <Table.HeaderCell>E-mail</Table.HeaderCell>
+      </Table.Row>
+    </Table.Header>
+    <Table.Body>
+      {usersList.map(({ id, fullName, email }) => (
+        <Table.Row>
+          <Table.Cell>{id}</Table.Cell>
+          <Table.Cell>{fullName}</Table.Cell>
+          <Table.Cell>{email}</Table.Cell>
+        </Table.Row>
+      ))}
+    </Table.Body>
+    <Table.Footer>
+      <Table.Row>
+        <Table.HeaderCell colSpan="3">
+          <Menu floated="right" pagination>
+            <Menu.Item as="a" icon>
+              <Icon name="chevron left" />
+            </Menu.Item>
+            <Menu.Item as="a">1</Menu.Item>
+            <Menu.Item as="a">2</Menu.Item>
+            <Menu.Item as="a">3</Menu.Item>
+            <Menu.Item as="a">4</Menu.Item>
+            <Menu.Item as="a" icon>
+              <Icon name="chevron right" />
+            </Menu.Item>
+          </Menu>
+        </Table.HeaderCell>
+      </Table.Row>
+    </Table.Footer>
+  </Table>
+);
 
-export default Users;
+export default class UsersList extends React.Component {
+  state = {
+    users: []
+  };
+
+  componentDidMount() {
+    axios.get('/api/getUsersList').then((res) => {
+      const users = res.data.data;
+      this.setState({ users });
+    });
+  }
+
+  render() {
+    const { users } = this.state;
+    return (
+      <div>
+        <TableExamplePagination usersList={users} />
+      </div>
+    );
+  }
+}
