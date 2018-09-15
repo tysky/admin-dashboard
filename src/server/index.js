@@ -7,8 +7,8 @@ const app = express();
 app.use(express.static('dist'));
 
 
-const getUsersList = async () => {
-  const url = 'https://front-test.now.sh/users';
+const getUsersList = async (paginationOffset) => {
+  const url = `https://front-test.now.sh/users?offset=${paginationOffset}`;
 
   const response = await axios({
     method: 'get',
@@ -26,7 +26,11 @@ app.get('/api/getUsername', (req, res) => res.send({
   username: os.userInfo().username
 }));
 app.get('/api/getUsersList', async (req, res) => {
-  const usersList = await getUsersList();
+  const {
+    page
+  } = req.query;
+  const paginationOffset = `${String(page - 1)}0`;
+  const usersList = await getUsersList(paginationOffset);
   res.send(usersList);
 });
 
