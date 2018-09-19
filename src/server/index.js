@@ -22,6 +22,20 @@ const getUsersList = async (paginationOffset) => {
   return users;
 };
 
+const getUserInfo = async (userId) => {
+  const url = `https://front-test.now.sh/users/${userId}`;
+
+  const response = await axios({
+    method: 'get',
+    url,
+    headers: {
+      'X-Auth-Token': '18476dc1c4fb11f4eebd2c4aaacdb3c14b3cd1e945dd8bc8456b73c8d4ef33cf'
+    }
+  });
+  const userInfo = response.data;
+
+  return userInfo;
+};
 app.get('/api/getUsername', (req, res) => res.send({
   username: os.userInfo().username
 }));
@@ -32,6 +46,14 @@ app.get('/api/getUsersList', async (req, res) => {
   const paginationOffset = `${String(page - 1)}0`;
   const usersList = await getUsersList(paginationOffset);
   res.send(usersList);
+});
+
+app.get('/api/getUserInfo', async (req, res) => {
+  const {
+    userId
+  } = req.query;
+  const userInfo = await getUserInfo(userId);
+  res.send(userInfo);
 });
 
 app.listen(8080, () => console.log('Listening on port 8080!'));

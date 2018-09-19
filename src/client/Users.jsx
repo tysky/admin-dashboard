@@ -4,8 +4,13 @@ import {
 } from 'semantic-ui-react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import {
+  Route, Link,
+} from 'react-router-dom';
 
-const UsersTable = ({ usersList }) => (
+import UserInfo from './User';
+
+const UsersTable = ({ usersList, url }) => (
   <Table celled>
     <Table.Header>
       <Table.Row>
@@ -17,7 +22,7 @@ const UsersTable = ({ usersList }) => (
     <Table.Body>
       {usersList.map(({ id, fullName, email }) => (
         <Table.Row key={id}>
-          <Table.Cell>{id}</Table.Cell>
+          <Table.Cell><Link to={`${url}/${id}`}>{id}</Link></Table.Cell>
           <Table.Cell>{fullName}</Table.Cell>
           <Table.Cell>{email}</Table.Cell>
         </Table.Row>
@@ -60,9 +65,10 @@ export default class UsersList extends React.Component {
 
   renderUsersTable(users) {
     const { activePage } = this.state;
+    const { match } = this.props;
     return (
       <React.Fragment>
-        <UsersTable usersList={users} />
+        <UsersTable usersList={users} url={match.url} />
         <Pagination
           activePage={activePage}
           onPageChange={this.handlePaginationChange}
@@ -74,10 +80,15 @@ export default class UsersList extends React.Component {
 
   render() {
     const { users, isLoading } = this.state;
-    return <div>{isLoading ? this.renderSpinner() : this.renderUsersTable(users)}</div>;
+    const { match } = this.props;
+    return (
+      <div>
+        {isLoading ? this.renderSpinner() : this.renderUsersTable(users)}
+        <Route path={`${match.url}/:userId`} component={UserInfo} />
+      </div>
+    );
   }
 }
-
 
 UsersTable.propTypes = {
   usersList: PropTypes.arrayOf(PropTypes.shape({
