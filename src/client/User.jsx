@@ -1,12 +1,13 @@
 import React from 'react';
 import {
-  Card, Image, Table, Segment, Dimmer, Loader, Icon
+  Card, Image, Table, Segment, Dimmer, Loader, Button, Icon
 } from 'semantic-ui-react';
 import axios from 'axios';
 import {
   YMaps, Map, Placemark, GeoObject
 } from 'react-yandex-maps';
-
+import EditDescription from './EditDescription';
+import EditImage from './EditImage';
 
 export default class UserInfo extends React.Component {
   state = {
@@ -21,14 +22,13 @@ export default class UserInfo extends React.Component {
   loadUser = () => {
     const { match } = this.props;
     axios.get(`/api/getUserInfo?userId=${match.params.userId}`).then((res) => {
-      const userInfo = res.data.data;
+      const userInfo = res.data;
       this.setState({ userInfo, isLoading: false });
     });
-  }
+  };
 
   renderSpinner = () => (
     <Segment>
-      {console.log('spinner!')}
       <Dimmer active inverted>
         <Loader size="large">Loading</Loader>
       </Dimmer>
@@ -39,7 +39,7 @@ export default class UserInfo extends React.Component {
   renderUserCard() {
     const {
       userInfo: {
-        id, firstName, lastName, fullName, email, location
+        id, firstName, lastName, fullName, email, location, imageUrl, description
       }
     } = this.state;
     const mapState = { center: [...location], zoom: 10 };
@@ -58,12 +58,12 @@ export default class UserInfo extends React.Component {
     return (
       <div>
         <Card>
-          <Image src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png" />
+          <Image src={`/api/${imageUrl}`} />
+          <EditImage userId={id} />
           <Card.Content>
             <Card.Header>{fullName}</Card.Header>
-            <Card.Description>
-              User hasn't description yet.
-            </Card.Description>
+            <Card.Description>{description}</Card.Description>
+            <EditDescription userId={id} />
           </Card.Content>
           <Card.Content extra>
             <Table basic>
@@ -84,10 +84,6 @@ export default class UserInfo extends React.Component {
                   <Table.Cell>E-mail</Table.Cell>
                   <Table.Cell>{email}</Table.Cell>
                 </Table.Row>
-                <Table.Row>
-                  <Table.Cell>Location</Table.Cell>
-                  <Table.Cell>{location}</Table.Cell>
-                </Table.Row>
               </Table.Body>
             </Table>
 
@@ -104,13 +100,8 @@ export default class UserInfo extends React.Component {
     );
   }
 
-
   render() {
     const { isLoading } = this.state;
-    return (
-      <div>
-        {isLoading ? this.renderSpinner() : this.renderUserCard() }
-      </div>
-    );
+    return <div>{isLoading ? this.renderSpinner() : this.renderUserCard()}</div>;
   }
 }

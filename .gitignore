@@ -3,3 +3,5 @@ dist
 *.log
 credentials*
 .vscode
+src/server/images
+src/server/users.json
