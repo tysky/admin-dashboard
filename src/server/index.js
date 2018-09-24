@@ -27,6 +27,7 @@ const getUsersList = async (paginationOffset) => {
   return users;
 };
 
+
 const getUserCustomData = async (userId) => {
   const defaultData = {
     imageUrl: 'defaultImage.png',
@@ -70,6 +71,7 @@ app.get('/api/getUsersList', async (req, res) => {
 
 app.get('/api/getUserInfo', async (req, res) => {
   const { userId } = req.query;
+  console.log('getUserInfo', userId);
   const userInfo = await getUserInfo(userId);
   res.send(userInfo);
 });
@@ -82,10 +84,11 @@ app.post('/api/setUserDescription', async (req, res) => {
   const usersData = fileData.length === 0 ? {} : JSON.parse(fileData);
   const newUsersData = { ...usersData, ...{ [userId]: { description } } };
   await fs.writeFile(`${__dirname}/users.json`, JSON.stringify(newUsersData));
+  res.status(200).send('Description edited');
 });
 
-app.get('/api/defaultImage.png', (req, res) => {
-  res.sendFile(path.join(__dirname, './images/defaultImage.png'));
+app.get('/api/userImage/:image', (req, res) => {
+  res.sendFile(`${__dirname}/images/${req.params.image}`);
 });
 
 app.post('/api/uploadImage', (req, res) => {

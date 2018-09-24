@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Card, Image, Table, Segment, Dimmer, Loader, Button, Icon
+  Card, Image, Table, Segment, Dimmer, Loader
 } from 'semantic-ui-react';
 import axios from 'axios';
 import {
@@ -26,6 +26,18 @@ export default class UserInfo extends React.Component {
       this.setState({ userInfo, isLoading: false });
     });
   };
+
+  setDescription = (desc) => {
+    const { userInfo } = this.state;
+    userInfo.description = desc;
+    this.setState({ userInfo });
+  }
+
+  setImageUrl = (imageUrl) => {
+    const { userInfo } = this.state;
+    userInfo.imageUrl = imageUrl;
+    this.setState({ userInfo });
+  }
 
   renderSpinner = () => (
     <Segment>
@@ -58,12 +70,12 @@ export default class UserInfo extends React.Component {
     return (
       <div>
         <Card>
-          <Image src={`/api/${imageUrl}`} />
-          <EditImage userId={id} />
+          <Image src={`/api/userImage/${imageUrl}`} />
+          <EditImage userId={id} setImageUrl={this.setImageUrl} />
           <Card.Content>
             <Card.Header>{fullName}</Card.Header>
             <Card.Description>{description}</Card.Description>
-            <EditDescription userId={id} />
+            <EditDescription userId={id} setDescription={this.setDescription} />
           </Card.Content>
           <Card.Content extra>
             <Table basic>

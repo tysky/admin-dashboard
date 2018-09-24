@@ -16,7 +16,7 @@ export default class ModalDescription extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const { inputDescription } = this.state;
-    const { userId } = this.props;
+    const { userId, setDescription } = this.props;
     axios({
       method: 'post',
       url: '/api/setUserDescription',
@@ -25,13 +25,11 @@ export default class ModalDescription extends React.Component {
         description: inputDescription
       }
     })
-      .then((response) => {
-        console.log(response);
-      })
       .catch((error) => {
         console.log(error);
       });
     this.handleClose();
+    setDescription(inputDescription);
   };
 
   handleDestInput = (e) => {
@@ -58,5 +56,6 @@ export default class ModalDescription extends React.Component {
 }
 
 ModalDescription.propTypes = {
-  userId: PropTypes.string.isRequired
+  userId: PropTypes.string.isRequired,
+  setDescription: PropTypes.func.isRequired
 };

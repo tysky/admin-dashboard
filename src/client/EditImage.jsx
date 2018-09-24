@@ -16,7 +16,7 @@ export default class ModalImage extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const { file } = this.state;
-    const { userId } = this.props;
+    const { userId, setImageUrl } = this.props;
     const formData = new FormData();
     formData.append(userId, file);
     const config = {
@@ -27,6 +27,8 @@ export default class ModalImage extends React.Component {
     axios.post('/api/uploadImage', formData, config)
       .then((response) => {
         console.log('The file is successfully uploaded');
+        const imageExtension = file.name.split('.').slice(-1)[0];
+        setImageUrl(`${userId}.${imageExtension}`);
       }).catch((error) => {
         console.error(error);
       });
@@ -70,5 +72,6 @@ export default class ModalImage extends React.Component {
 }
 
 ModalImage.propTypes = {
-  userId: PropTypes.string.isRequired
+  userId: PropTypes.string.isRequired,
+  setImageUrl: PropTypes.func.isRequired
 };
