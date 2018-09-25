@@ -105,5 +105,4 @@ app.post('/api/uploadImage', (req, res) => {
     return res.send('File uploaded!');
   });
 });
-
 app.listen(8080, () => console.log('Listening on port 8080!'));

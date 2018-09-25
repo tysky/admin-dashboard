@@ -8,7 +8,8 @@ module.exports = {
   entry: './src/client/index.jsx',
   output: {
     path: path.join(__dirname, outputDirectory),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/'
   },
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -30,6 +31,7 @@ module.exports = {
     ]
   },
   devServer: {
+    historyApiFallback: true,
     port: 3000,
     open: true,
     proxy: {

@@ -10,9 +10,9 @@ export default class LoginPage extends React.Component {
   };
 
   onSuccess = (response) => {
-    this.setState({ redirectToReferrer: true });
     const { responseGoogle } = this.props;
     responseGoogle(response);
+    this.setState({ redirectToReferrer: true });
   };
 
   render() {
