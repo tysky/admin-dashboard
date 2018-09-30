@@ -71,18 +71,22 @@ app.get('/api/getUsersList', async (req, res) => {
 
 app.get('/api/getUserInfo', async (req, res) => {
   const { userId } = req.query;
-  console.log('getUserInfo', userId);
   const userInfo = await getUserInfo(userId);
   res.send(userInfo);
 });
 
+const getUsersData = async () => {
+  const options = { encoding: 'utf-8', flag: 'a+' };
+  const fileData = await fs.readFile(`${__dirname}/users.json`, options);
+  return fileData.length === 0 ? {} : JSON.parse(fileData);
+};
+
 app.post('/api/setUserDescription', async (req, res) => {
   const { userId, description } = req.body;
 
-  const options = { encoding: 'utf-8', flag: 'a+' };
-  const fileData = await fs.readFile(`${__dirname}/users.json`, options);
-  const usersData = fileData.length === 0 ? {} : JSON.parse(fileData);
-  const newUsersData = { ...usersData, ...{ [userId]: { description } } };
+  const usersData = await getUsersData();
+  const { imageUrl } = usersData[userId];
+  const newUsersData = { ...usersData, ...{ [userId]: { description, imageUrl } } };
   await fs.writeFile(`${__dirname}/users.json`, JSON.stringify(newUsersData));
   res.status(200).send('Description edited');
 });
@@ -91,15 +95,21 @@ app.get('/api/userImage/:image', (req, res) => {
   res.sendFile(`${__dirname}/images/${req.params.image}`);
 });
 
-app.post('/api/uploadImage', (req, res) => {
+app.post('/api/uploadImage', async (req, res) => {
   if (!req.files) { return res.status(400).send('No files were uploaded.'); }
-  const image = Object.keys(req.files)[0];
-  const imageFile = req.files[image];
-  const filePath = `${__dirname}/images/${image}${path.extname(imageFile.name)}`;
+  const userId = Object.keys(req.files)[0];
+  const imageFile = req.files[userId];
+  const filePath = `${__dirname}/images/${userId}${path.extname(imageFile.name)}`;
   const parentPath = path.dirname(filePath);
   if (!fs.existsSync(parentPath)) {
     fs.mkdirSync(parentPath);
   }
+  const usersData = await getUsersData();
+  const { description } = usersData[userId] || '';
+  const imageUrl = `${userId}${path.extname(imageFile.name)}`;
+  const newUsersData = { ...usersData, ...{ [userId]: { description, imageUrl } } };
+  await fs.writeFile(`${__dirname}/users.json`, JSON.stringify(newUsersData));
+
   imageFile.mv(filePath, (err) => {
     if (err) { return res.status(500).send(err); }
     return res.send('File uploaded!');
