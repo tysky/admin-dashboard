@@ -12,7 +12,7 @@ import './app.css';
 export default class App extends React.Component {
   state = {
     username: 'Guest',
-    isAuthenticated: false
+    isAuthenticated: Boolean(sessionStorage.getItem('isAuth')) || false,
   };
 
   responseGoogle = (response) => {
@@ -20,6 +20,7 @@ export default class App extends React.Component {
       username: response.profileObj.name,
       isAuthenticated: true
     });
+    sessionStorage.setItem('isAuth', 'true');
   };
 
   logout = () => {
@@ -27,6 +28,7 @@ export default class App extends React.Component {
       username: 'Guest',
       isAuthenticated: false
     });
+    sessionStorage.setItem('isAuth', 'false');
   };
 
   render() {
