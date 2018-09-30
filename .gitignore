@@ -1,6 +1,5 @@
 node_modules
 dist
 *.log
-credentials*
 .vscode
 src/server/users.json
