@@ -1,10 +1,11 @@
 import React from 'react';
 import { GoogleLogout } from 'react-google-login';
 import {
-  BrowserRouter as Router, Route, Link, Redirect, withRouter, Switch
+  BrowserRouter as Router, Route, Link, Redirect, Switch
 } from 'react-router-dom';
+import { Button } from 'semantic-ui-react';
 import UsersList from './Users';
-import LoginPage from './LoginPage';
+import LoginButton from './LoginButton';
 
 import './app.css';
 
@@ -31,15 +32,13 @@ export default class App extends React.Component {
   render() {
     const { username, isAuthenticated } = this.state;
     return (
-      <div>
-        {username ? <h1>{`Hello ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
+      <div style={{ padding: '20px' }}>
+        <h1>{`Hello ${username}`}</h1>
         <Router>
           <div>
-            <ul>
-              <li>
-                <Link to="/users">Users</Link>
-              </li>
-            </ul>
+            <Button style={{ width: '150px' }}>
+              <Link to="/users">Users</Link>
+            </Button>
             {isAuthenticated ? (
               <GoogleLogout buttonText="Logout" onLogoutSuccess={this.logout} />
             ) : null}
@@ -51,7 +50,7 @@ export default class App extends React.Component {
               />
               <Route
                 path="/auth"
-                render={props => <LoginPage responseGoogle={this.responseGoogle} {...props} />}
+                render={props => <LoginButton responseGoogle={this.responseGoogle} {...props} />}
               />
               <PrivateRoute path="/users" component={UsersList} isAuthenticated={isAuthenticated} />
               <Redirect to="/" />
