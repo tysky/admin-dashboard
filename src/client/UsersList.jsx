@@ -95,5 +95,6 @@ UsersTable.propTypes = {
     id: PropTypes.string,
     fullName: PropTypes.string,
     email: PropTypes.string,
-  })).isRequired
+  })).isRequired,
+  url: PropTypes.string.isRequired
 };

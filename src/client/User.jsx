@@ -4,7 +4,7 @@ import {
 } from 'semantic-ui-react';
 import axios from 'axios';
 import {
-  YMaps, Map, Placemark, GeoObject
+  YMaps, Map, Placemark,
 } from 'react-yandex-maps';
 import EditDescription from './EditDescription';
 import EditImage from './EditImage';
@@ -27,17 +27,15 @@ export default class UserInfo extends React.Component {
     });
   };
 
-  setDescription = (desc) => {
+  updateUserInfo = (propName, propValue) => {
     const { userInfo } = this.state;
-    userInfo.description = desc;
+    userInfo[propName] = propValue;
     this.setState({ userInfo });
   }
 
-  setImageUrl = (imageUrl) => {
-    const { userInfo } = this.state;
-    userInfo.imageUrl = imageUrl;
-    this.setState({ userInfo });
-  }
+  setDescription = desc => this.updateUserInfo('description', desc);
+
+  setImageUrl = imageUrl => this.updateUserInfo('imageUrl', imageUrl);
 
   renderSpinner = () => (
     <Segment>
@@ -54,10 +52,11 @@ export default class UserInfo extends React.Component {
         id, firstName, lastName, fullName, email, location, imageUrl, description
       }
     } = this.state;
-    const mapState = { center: [...location], zoom: 10 };
+    const [firstCoordinate, secondCoordinate] = location.map(Number);
+    const mapState = { center: [firstCoordinate, secondCoordinate], zoom: 10 };
     const placemarkParams = {
       geometry: {
-        coordinates: [...location]
+        coordinates: [firstCoordinate, secondCoordinate]
       },
       properties: {
         balloonContent: fullName

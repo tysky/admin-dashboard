@@ -66,19 +66,16 @@ export default class App extends React.Component {
 const PrivateRoute = ({ component: Component, isAuthenticated, ...rest }) => (
   <Route
     {...rest}
-    render={(props) => {
-      console.log('privateRoute==', isAuthenticated, props);
-      return (isAuthenticated ? (
-        <Component {...props} />
-      ) : (
-        <Redirect
-          to={{
-            pathname: '/auth',
-            state: { from: props.location }
-          }}
-        />
-      ));
-    }
+    render={props => (isAuthenticated ? (
+      <Component {...props} />
+    ) : (
+      <Redirect
+        to={{
+          pathname: '/auth',
+          state: { from: props.location }
+        }}
+      />
+    ))
     }
   />
 );
